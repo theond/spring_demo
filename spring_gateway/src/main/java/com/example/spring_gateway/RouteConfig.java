@@ -9,11 +9,16 @@ import org.springframework.context.annotation.Configuration;
 public class RouteConfig {
 
     @Bean
-    public RouteLocator myRoutes(RouteLocatorBuilder builder){
+    public RouteLocator myRoutes(RouteLocatorBuilder builder, UriConfiguration uriConfiguration){
+        String httpUri = uriConfiguration.getHttpbin();
         return builder.routes()
                 .route(p -> p.path("/get")
                         .filters(f->f.addRequestHeader("Hello","World"))
-                        .uri("http://httpbin.org:80"))
+                        .uri(httpUri))
+                .route(p->p.host("*.circuitbreaker.com")
+                        .filters(f->f.circuitBreaker(config -> config.setName("mycmd")
+                                .setFallbackUri("forward:/fallback")))
+                        .uri(httpUri))
                 .build();
     }
 }

@@ -1,2 +1,6 @@
 server:
   port: 9500
+
+uri:
+  http:
+    httpbin: http://httpbin.org:80
